@@ -10,7 +10,7 @@ FEATURE_EXTRACTOR_CONFIG = {
     'type': 'eegnet-ltc',
     'use_ltc': True,  #set to False for eegnet-only mode; if using ltc, then the input dim for the attention in the ctm is the total number of neurons used for the ltc (inter + command + motor) in shape: batch x window size x ltc_neurons
     'channels': 122,
-    'window_size': 200,
+    'window_size': 300,
     'eegnet_output_dim': 64,  #if using eegnet-only, this output dim becomes the input dim for your attention input dim (uses lazylinear)
     'ltc': {
         'inter_neurons': 32,
@@ -49,10 +49,10 @@ CTM_CONFIG = {
 DATASET_CONFIG = {
     'window_size': 300,
     'channels': 122,
-    'batch_size': 8,
+    'batch_size': 1,
     'confidence_threshold': 0,
     'experiments': [10, 11, 12],
-    'train_per_exp': 1,
+    'train_per_exp': 2,
     'test_per_exp': 0,
     'feature_extractor': 'eegnet-ltc'
 }

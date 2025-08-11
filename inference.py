@@ -5,7 +5,7 @@ from utilities.inference_utilities import (
 DEVICE = "cpu"
 
 #model and metrics paths
-model_path = r"rl_training\checkpoint_weights\eegnet_ltc\second_demo\checkpoint_epoch_1300.pt"
+model_path = r"rl_training\checkpoint_weights\eegnet_ltc\second_demo\checkpoint_epoch_1500.pt"
 metrics_path = r"rl_training\metrics\eegnet_ltc\second_demo"
 
 #load trained eeg-ctm model
@@ -18,7 +18,7 @@ print("eeg-ctm model loaded successfully")
 
 #load test dataset
 test_dataset = load_dataset(
-    experiments=[11], 
+    experiments=[10], 
     trials=1, 
     window_size=model.inference_params['window_size'],
     channels=model.inference_params['channels']
