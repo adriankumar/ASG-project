@@ -1,7 +1,9 @@
 import torch
 from data.loading_data import prepare_chisco_dataset, prepare_torch_dataset
 from model_components.full_architecture import create_eeg_ctm_model
-from utilities.policy_utilities import train_ctm_model
+# from utilities.policy_utilities import train_ctm_model
+from utilities.policy_utilities_v2 import train_ctm_model
+
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -57,23 +59,26 @@ DATASET_CONFIG = {
     'feature_extractor': 'eegnet-ltc'
 }
 
+
 TRAIN_CONFIG = {
     'epochs': 1500, 
-    'model_checkpoint_dir': r"rl_training\checkpoint_weights\eegnet_ltc\second_demo",
-    'training_metrics_dir': r"rl_training\metrics\eegnet_ltc\second_demo",
+    'model_checkpoint_dir': r"rl_training\checkpoint_weights\eegnet_ltc\with_substring_penalty",
+    'training_metrics_dir': r"rl_training\metrics\eegnet_ltc\with_substring_penalty",
     'loss_weights': {'policy': 0.9, 'confidence': 0.2, 'embedding': 0.1},
     'reward_weights': {
         'semantic': 1.5,  #cosine similarity weight in total reward computation
-        'token': 0.0,  #exact word match weight in total reward computation
+        'token': 0.1,  #exact word match weight in total reward computation
         'edit': 0.8,  #edit distance weight in total reward computation, structure
         'bleu': 0.5,  #bleu score weight in total reward computation
         'consecutive_penalty': 0.6,  #consecutive penalty weight in total reward computation
-        'frequency_penalty': 0.2  #frequency penalty weight in total reward computation
+        'frequency_penalty': 0.2,  #frequency penalty weight in total reward computation
+        'substring_penalty': 0.1  #substring penalty weight in total reward computation 
     },
     'penalty_config': {
         'frequency_threshold': 0.3,  #threshold above which words trigger frequency penalty
         'consecutive_penalty_weight': 0.6,  #multiplier for consecutive word penalty strength
-        'frequency_penalty_weight': 0.4  #multiplier for frequency penalty strength
+        'frequency_penalty_weight': 0.4,  #multiplier for frequency penalty strength
+        'substring_penalty': 0.4
     },
     'learning_rate': 0.0005,
     'save_freq': 50
@@ -144,7 +149,9 @@ def main():
         dataset_config=DATASET_CONFIG,
         frequency_threshold=TRAIN_CONFIG['penalty_config']['frequency_threshold'],
         consecutive_penalty_weight=TRAIN_CONFIG['penalty_config']['consecutive_penalty_weight'],
-        frequency_penalty_weight=TRAIN_CONFIG['penalty_config']['frequency_penalty_weight']
+        frequency_penalty_weight=TRAIN_CONFIG['penalty_config']['frequency_penalty_weight'],
+        substring_penalty_weight=TRAIN_CONFIG['penalty_config']['substring_penalty'],
+        substring_min_length=4
     )
     
     #print final results
@@ -162,6 +169,7 @@ def main():
     print(f"final bleu reward: {final_metrics['bleu_reward']:.3f}")
     print(f"final consecutive penalty: {final_metrics['consecutive_penalty']:.3f}")
     print(f"final frequency penalty: {final_metrics['frequency_penalty']:.3f}")
+    print(f"final substring penalty: {final_metrics['substring_penalty']:.3f}")
 
 if __name__ == "__main__":
     main()
