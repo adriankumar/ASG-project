@@ -2,6 +2,7 @@
 Attempting augmentative speech generation using BCI 
 
 currently working on a demo/proof of concept before moving on to real bci usage
+demo is using 3 samples from Chisco dataset of imagined speech
 
 to do (soon):
 - Start writing some documentation
